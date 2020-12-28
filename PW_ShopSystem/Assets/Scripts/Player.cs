@@ -6,19 +6,14 @@ public class Player : MonoBehaviour
 {
     [SerializeField] float _speed = 10;
     [SerializeField] float _jumpVelocity = 5.0f;
-    [SerializeField] SpriteRenderer keySprite;
-    [SerializeField] Sprite keyFilledSprite;
-    [SerializeField] Sprite keyEmptySprite;
     [SerializeField] int _remainingJumps = 2;
     [SerializeField] bool _isGrounded;
     [SerializeField] Transform _feet;
     [SerializeField] float _downPull;
-    [SerializeField] ParticleSystem ressurectionParticle;
 
     Rigidbody2D rb;
     Animator animator;
     SpriteRenderer spriteRenderer;
-    GameObject _key;
 
     float horizontalInput;
     bool jump;
@@ -27,7 +22,6 @@ public class Player : MonoBehaviour
     float _fallTimer = 0;
     Vector2 _startingPosition;
 
-    public bool HasKey { get; private set; }
 
     private void Awake()
     {
@@ -80,28 +74,6 @@ public class Player : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        if (collision.gameObject.CompareTag("Key"))
-        {
-            AcquireKey();
-            _key = collision.gameObject;
-            _key.SetActive(false);
-        }
-    }
-
-    void AcquireKey()
-    {
-        HasKey = true;
-        keySprite.sprite = keyFilledSprite;
-    }
-
-    void RemoveKey()
-    {
-        HasKey = false;
-        keySprite.sprite = keyEmptySprite;
-    }
-
     void HandleFalling()
     {
         var hit = Physics2D.OverlapCircle(_feet.position, 0.1f, LayerMask.GetMask("Default"));
@@ -124,20 +96,4 @@ public class Player : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y - downForce);
         }
     }
-
-    public void Reset()
-    {
-        RemoveKey();
-        if (_key != null)
-        {
-            _key.SetActive(true);
-        }
-        rb.velocity = Vector2.zero;
-        transform.position = _startingPosition;
-        if (ressurectionParticle != null)
-        {
-            ressurectionParticle.Play();
-        }
-    }
-
 }
