@@ -9,6 +9,8 @@ public class Item
     string _name;
     string _description;
     float _weight;
-    float _price;
+    public float _price;
     Sprite _image;
+
+    
 }
