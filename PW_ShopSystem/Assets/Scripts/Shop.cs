@@ -8,6 +8,7 @@ public class Shop : MonoBehaviour
     [SerializeField] List<Item> _items;
     [SerializeField] float _priceModifier;
     [SerializeField] List<Image> _slotImages;
+    [SerializeField] Image shopInventoryWindow;
 
     // Start is called before the first frame update
     void Start()
@@ -45,6 +46,26 @@ public class Shop : MonoBehaviour
         for (int i = 0; i < _slotImages.Count; i++)
         {
             _slotImages[i].sprite = _items[i]._image;
+        }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        var player = collision.GetComponent<Player>();
+
+        if (player != null)
+        {
+            shopInventoryWindow.gameObject.SetActive(true);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        var player = collision.GetComponent<Player>();
+
+        if (player != null)
+        {
+            shopInventoryWindow.gameObject.SetActive(false);
         }
     }
 }
