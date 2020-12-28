@@ -49,9 +49,14 @@ public class Shop : MonoBehaviour
         for (int i = 0; i < _slots.Count; i++)
         {
             _slots[i].AssignedItem = _items[i];
-            _slots[i].SetSlotImage();
+            _slots[i].SetSlotItem();
         }
 
+        DisplayCurrentMoneyAmount();
+    }
+
+    private void DisplayCurrentMoneyAmount()
+    {
         _moneyAmountText.text = _moneyAmount.ToString();
     }
 
