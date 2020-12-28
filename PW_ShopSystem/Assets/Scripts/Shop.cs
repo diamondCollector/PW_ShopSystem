@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Shop : MonoBehaviour
 {
     [SerializeField] List<Item> _items;
     [SerializeField] float _priceModifier;
     [SerializeField] int _moneyAmount;
+    [SerializeField] TextMeshProUGUI _moneyAmountText;
     [SerializeField] List<InventorySlot> _slots;
     [SerializeField] Image shopInventoryWindow;
 
@@ -48,8 +50,9 @@ public class Shop : MonoBehaviour
         {
             _slots[i].AssignedItem = _items[i];
             _slots[i].SetSlotImage();
-            Debug.Log("setup shopa");
         }
+
+        _moneyAmountText.text = _moneyAmount.ToString();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
