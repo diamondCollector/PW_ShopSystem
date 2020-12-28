@@ -1,11 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Shop : MonoBehaviour
 {
     [SerializeField] List<Item> _items;
     [SerializeField] float _priceModifier;
+    [SerializeField] List<Image> _slotImages;
+
     // Start is called before the first frame update
     void Start()
     {       
@@ -35,4 +38,6 @@ public class Shop : MonoBehaviour
             }
         }
     }
+
+    
 }
