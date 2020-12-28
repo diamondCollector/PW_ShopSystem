@@ -7,7 +7,8 @@ public class Shop : MonoBehaviour
 {
     [SerializeField] List<Item> _items;
     [SerializeField] float _priceModifier;
-    [SerializeField] List<Image> _slotImages;
+    [SerializeField] int _moneyAmount;
+    [SerializeField] List<InventorySlot> _slots;
     [SerializeField] Image shopInventoryWindow;
 
     // Start is called before the first frame update
@@ -43,9 +44,11 @@ public class Shop : MonoBehaviour
 
     void SetupShopInventory()
     {
-        for (int i = 0; i < _slotImages.Count; i++)
+        for (int i = 0; i < _slots.Count; i++)
         {
-            _slotImages[i].sprite = _items[i]._image;
+            _slots[i].AssignedItem = _items[i];
+            _slots[i].SetSlotImage();
+            Debug.Log("setup shopa");
         }
     }
 
