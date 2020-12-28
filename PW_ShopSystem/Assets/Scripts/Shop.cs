@@ -11,19 +11,14 @@ public class Shop : MonoBehaviour
     [SerializeField] int _moneyAmount;
     [SerializeField] TextMeshProUGUI _moneyAmountText;
     [SerializeField] List<InventorySlot> _slots;
-    [SerializeField] Image shopInventoryWindow;
+    [SerializeField] Image _shopInventoryWindow;
+    [SerializeField] Image _playerInventoryWindow;
 
     // Start is called before the first frame update
     void Start()
     {       
         ModifyItemPrices();
         SetupShopInventory();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 
     void ModifyItemPrices()
@@ -66,7 +61,8 @@ public class Shop : MonoBehaviour
 
         if (player != null)
         {
-            shopInventoryWindow.gameObject.SetActive(true);
+            _shopInventoryWindow.gameObject.SetActive(true);
+            _playerInventoryWindow.gameObject.SetActive(true);
         }
     }
 
@@ -76,7 +72,8 @@ public class Shop : MonoBehaviour
 
         if (player != null)
         {
-            shopInventoryWindow.gameObject.SetActive(false);
+            _shopInventoryWindow.gameObject.SetActive(false);
+            _playerInventoryWindow.gameObject.SetActive(false);
         }
     }
 }
