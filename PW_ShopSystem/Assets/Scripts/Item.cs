@@ -10,7 +10,7 @@ public class Item
     string _description;
     float _weight;
     public float _price;
-    Sprite _image;
+    public Sprite _image;
 
     
 }

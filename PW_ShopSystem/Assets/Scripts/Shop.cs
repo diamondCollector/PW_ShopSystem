@@ -13,6 +13,7 @@ public class Shop : MonoBehaviour
     void Start()
     {       
         ModifyItemPrices();
+        SetupShopInventory();
     }
 
     // Update is called once per frame
@@ -39,5 +40,11 @@ public class Shop : MonoBehaviour
         }
     }
 
-    
+    void SetupShopInventory()
+    {
+        for (int i = 0; i < _slotImages.Count; i++)
+        {
+            _slotImages[i].sprite = _items[i]._image;
+        }
+    }
 }
