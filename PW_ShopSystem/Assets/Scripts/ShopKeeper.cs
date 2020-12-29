@@ -20,8 +20,11 @@ public class ShopKeeper : MonoBehaviour
     List<InventorySlot> _selectedShopSlots;
     List<InventorySlot> _selectedPlayerSlots;
 
-    float _shopPriceOfSelectedItems;
-    float _playerPriceOfSelectedItems;
+    List<Item> _selectedShopItems = new List<Item>();
+    List<Item> _selectedPlayerItems = new List<Item>();
+
+    float _shopSelectedItemsPrice;
+    float _playerSelectedItemsPrice;
     float _balance;
 
     PlayerEquipment _playerEquipment;
@@ -30,17 +33,17 @@ public class ShopKeeper : MonoBehaviour
 
     private void OnEnable()
     {
-        /*
+        
         foreach (InventorySlot slot in _shopSlots)
         {
-            slot.GetComponent<Image>(). 
+            slot.OnSlotClicked += HandleSlotSelection; 
         }
 
         foreach (InventorySlot slot in _playerSlots)
         {
-            slot.OnSlotClicked += CalculatePrice;
+            slot.OnSlotClicked += HandleSlotSelection;
         }
-        */
+       
     }
 
     private void Start()
@@ -60,15 +63,34 @@ public class ShopKeeper : MonoBehaviour
     {
         if (slot.IsAssignedToShop)
         {
-            if (slot.IsSelected)
-            {
-                _selectedShopSlots.Add(slot);
-            }
-            else if (_selectedShopSlots.Contains(slot))
-            {
-                _selectedShopSlots.Remove(slot);
-            }
+            ManageSelectedItem(slot, _shopSelectedItems);
             
+        }
+        else
+        {
+            ManageSelectedItem(slot, _playerSelectedItems);
+        }
+    }
+
+    
+
+    private void ManageSelectedItem(InventorySlot slot, List<Item> selectedItems)
+    {
+        if (slot.IsSelected)
+        {
+            selectedItems.Add(slot.AssignedItem);
+            //_selectedShopSlots.Add(slot);
+            Debug.Log(slot.AssignedItem._name +
+                " has been added to selected Shop items. Current number of selected items: "
+                + selectedItems.Count);
+        }
+        else if (!slot.IsSelected && selectedItems.Contains(slot.AssignedItem))
+        {
+            selectedItems.Remove(slot.AssignedItem);
+            //_selectedShopSlots.Remove(slot);
+            Debug.Log(slot.AssignedItem._name +
+                " has been removed from selected Shop items. Current number of selected items: "
+                + selectedItems.Count);
         }
     }
 

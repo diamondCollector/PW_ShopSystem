@@ -23,7 +23,7 @@ public class InventorySlot : MonoBehaviour
     public bool IsSelected { get { return _isSelected; } }
     public bool IsAssignedToShop { get { return _isAssignedToShop; } }
 
-    public event Action<string> OnSlotClicked;
+    public event Action<InventorySlot> OnSlotClicked;
 
     private void Awake()
     {
@@ -55,8 +55,8 @@ public class InventorySlot : MonoBehaviour
         {
             _backgroundImage.color = Color.white;
         }
-        var name = this.name;
-        OnSlotClicked?.Invoke(name);
+
+        OnSlotClicked?.Invoke(this);
     }
 
     public void UnselectSlot()
