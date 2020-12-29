@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class Shop : MonoBehaviour
 {
@@ -18,7 +19,9 @@ public class Shop : MonoBehaviour
     PlayerInventory _playerInventory;
     float _priceOfSelectedItems;
     float _balance;
-    List<Item> _selectedItems;
+    List<Item> _selectedItems = new List<Item>();
+
+    public static Action OnTrade;
 
     private void Awake()
     {
@@ -29,7 +32,7 @@ public class Shop : MonoBehaviour
     {
         foreach (InventorySlot slot in _slots)
         {
-            slot.OnItemSelected += CalculatePriceOfSelectedItems;
+            slot.OnItemClicked += CalculatePriceOfSelectedItems;
         }
     }
 
@@ -44,7 +47,7 @@ public class Shop : MonoBehaviour
     {
         foreach (InventorySlot slot in _slots)
         {
-            slot.OnItemSelected -= CalculatePriceOfSelectedItems;
+            slot.OnItemClicked -= CalculatePriceOfSelectedItems;
         }
     }
 
@@ -52,7 +55,7 @@ public class Shop : MonoBehaviour
     {
         foreach (Item item in _items)
         {
-            var randomNumber = Random.Range(0, 1);
+            var randomNumber = UnityEngine.Random.Range(0, 1);
             bool isAddingMargin = randomNumber > 0.5f;
 
             if (isAddingMargin)
@@ -79,7 +82,6 @@ public class Shop : MonoBehaviour
                 _slots[i].AssignedItem = _items[i];
                 _slots[i].SetSlotItem();
             }
-            
         }
 
         DisplayCurrentMoneyAmount();
@@ -124,7 +126,29 @@ public class Shop : MonoBehaviour
             _playerInventory.MoneyAmount += _balance;
             _moneyAmount += _balance * -1;
             DisplayCurrentMoneyAmount();
+
+            TransferSelectedItemsToPlayerInventory();
+            //TransferSelectedItemsToShopInventory();
+
+            OnTrade?.Invoke();
+            _selectedItems.Clear();
+            CalculatePriceOfSelectedItems();
+            DisplayTotalBalanceOfSelectedItems();
+            
         }
+    }
+
+    private void TransferSelectedItemsToPlayerInventory()
+    {
+        foreach (Item item in _selectedItems)
+        {
+            _items.Remove(item);
+            _playerInventory._items.Add(item);
+            SetupShopInventory();
+            _playerInventory.SetupPlayerInventory();
+        }
+
+
     }
 
     void OnTriggerEnter2D(Collider2D collision)

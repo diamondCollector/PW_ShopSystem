@@ -19,7 +19,7 @@ public class InventorySlot : MonoBehaviour
 
     public Item AssignedItem { get { return _assignedItem; } set { _assignedItem = value; } }
 
-    public event Action OnItemSelected;
+    public event Action OnItemClicked;
 
 
     private void Awake()
@@ -27,6 +27,15 @@ public class InventorySlot : MonoBehaviour
         _backgroundImage = GetComponent<Image>();
     }
 
+    private void OnEnable()
+    {
+        Shop.OnTrade += UnselectSlot;
+    }
+
+    private void OnDisable()
+    {
+        Shop.OnTrade -= UnselectSlot;
+    }
     public void SetSlotItem()
     {
         _slotImage.sprite = _assignedItem._image;
@@ -53,7 +62,13 @@ public class InventorySlot : MonoBehaviour
             _backgroundImage.color = Color.white;
         }
 
-        OnItemSelected?.Invoke();
+        OnItemClicked?.Invoke();
+    }
+
+    public void UnselectSlot()
+    {
+        _isSelected = false;
+        _backgroundImage.color = Color.white;
     }
     
 }

@@ -7,21 +7,23 @@ using System;
 
 public class PlayerInventory : MonoBehaviour
 {
-    [SerializeField] List<Item> _items;
+    [SerializeField] public List<Item> _items;
     [SerializeField] float _moneyAmount;
     
     [SerializeField] List<InventorySlot> _slots;
     float _priceOfSelectedItems;
     public float MoneyAmount { get { return _moneyAmount; } set { _moneyAmount = value; } }
     public float PriceOfSelectedItems { get { return _priceOfSelectedItems; } }
-
     public Action onPriceOfSelectedItemsCalculated;
+    List<Item> _selectedItems = new List<Item>();
 
     private void OnEnable()
     {
+        Shop.OnTrade += ClearSelectedItems;
+        Shop.OnTrade += CalculatePriceOfSelectedItems;
         foreach (InventorySlot slot in _slots)
         {
-            slot.OnItemSelected += CalculatePriceOfSelectedItems;
+            slot.OnItemClicked += CalculatePriceOfSelectedItems;
         }
     }
 
@@ -33,13 +35,15 @@ public class PlayerInventory : MonoBehaviour
 
     private void OnDisable()
     {
+        Shop.OnTrade -= ClearSelectedItems;
+        Shop.OnTrade -= CalculatePriceOfSelectedItems;
         foreach (InventorySlot slot in _slots)
         {
-            slot.OnItemSelected -= CalculatePriceOfSelectedItems;
+            slot.OnItemClicked -= CalculatePriceOfSelectedItems;
         }
     }
 
-    void SetupPlayerInventory()
+    public void SetupPlayerInventory()
     {
         for (int i = 0; i < _slots.Count; i++)
         {
@@ -63,9 +67,19 @@ public class PlayerInventory : MonoBehaviour
             if (slot.IsSelected)
             {
                 _priceOfSelectedItems += slot.AssignedItem._price;
+                _selectedItems.Add(slot.AssignedItem);
+            }
+            else
+            {
+                _selectedItems.Remove(slot.AssignedItem);
             }
         }
         onPriceOfSelectedItemsCalculated?.Invoke();
         Debug.Log("Price of selected Items on player side: " + _priceOfSelectedItems);
+    }
+
+    void ClearSelectedItems()
+    {
+        _selectedItems.Clear();
     }
 }

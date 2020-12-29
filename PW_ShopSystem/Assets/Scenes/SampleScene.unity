@@ -233,7 +233,7 @@ GameObject:
   - component: {fileID: 24702609}
   - component: {fileID: 24702608}
   m_Layer: 5
-  m_Name: Button
+  m_Name: TradeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -256,7 +256,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 4, y: -27}
+  m_AnchoredPosition: {x: 2, y: -27}
   m_SizeDelta: {x: 177.06067, y: 44.623413}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &24702608
@@ -301,7 +301,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 24702609}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1080807071}
+        m_TargetAssemblyTypeName: Shop, Assembly-CSharp
+        m_MethodName: Trade
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &24702609
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2096,7 +2108,6 @@ MonoBehaviour:
     _price: 50
     _image: {fileID: 21300000, guid: c59fb2b40642504459aa5119bc37ccf8, type: 3}
   _moneyAmount: 150
-  _moneyAmountText: {fileID: 1617992607}
   _slots:
   - {fileID: 1324268260}
   - {fileID: 1458702642}
@@ -2397,7 +2408,8 @@ MonoBehaviour:
     _image: {fileID: 21300000, guid: b46a360d8842d834daac0224d9c6cc51, type: 3}
   _priceModifier: 0.2
   _moneyAmount: 50
-  _moneyAmountText: {fileID: 1693567273}
+  _shopMoneyAmountText: {fileID: 1693567273}
+  _playerMoneyAmountText: {fileID: 1617992607}
   _slots:
   - {fileID: 1238749021}
   - {fileID: 1119579560}
@@ -2409,6 +2421,7 @@ MonoBehaviour:
   - {fileID: 1208118695}
   _shopInventoryWindow: {fileID: 1740679455}
   _playerInventoryWindow: {fileID: 1985146514}
+  _balanceText: {fileID: 1865327812}
 --- !u!224 &1119579559 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 6410531620216700880, guid: 71430067b3a919d46b153c26083ebc8b, type: 3}
@@ -4020,7 +4033,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1740679454
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4256,8 +4269,8 @@ MonoBehaviour:
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
-  m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -4407,7 +4420,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1985146513
 RectTransform:
   m_ObjectHideFlags: 0
