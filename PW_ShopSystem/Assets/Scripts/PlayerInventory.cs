@@ -49,12 +49,13 @@ public class PlayerInventory : MonoBehaviour
         {
             if (i >= _items.Count)
             {
-                return;
+                _slots[i].gameObject.SetActive(false);
             }
             else
             {
                 _slots[i].AssignedItem = _items[i];
                 _slots[i].SetSlotItem();
+                _slots[i].gameObject.SetActive(true);
             }
         }
     }

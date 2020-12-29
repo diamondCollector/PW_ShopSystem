@@ -75,12 +75,14 @@ public class Shop : MonoBehaviour
         {
             if (i >= _items.Count)
             {
-                return;
+                _slots[i].gameObject.SetActive(false);
             }
             else
             {
+                _slots[i].gameObject.SetActive(true);
                 _slots[i].AssignedItem = _items[i];
                 _slots[i].SetSlotItem();
+                _slots[i].gameObject.SetActive(true);
             }
         }
 
@@ -147,8 +149,6 @@ public class Shop : MonoBehaviour
             SetupShopInventory();
             _playerInventory.SetupPlayerInventory();
         }
-
-
     }
 
     void OnTriggerEnter2D(Collider2D collision)
