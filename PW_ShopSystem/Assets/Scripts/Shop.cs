@@ -6,27 +6,10 @@ using TMPro;
 using System;
 
 public class Shop : MonoBehaviour
-{
-    [SerializeField] List<Item> _items;
-    [SerializeField] float _priceModifier;
-    [SerializeField] float _moneyAmount;
-    [SerializeField] TextMeshProUGUI _shopMoneyAmountText;
-    [SerializeField] TextMeshProUGUI _playerMoneyAmountText;
-    [SerializeField] List<InventorySlot> _slots;
-    [SerializeField] Image _shopInventoryWindow;
-    [SerializeField] Image _playerInventoryWindow;
-    [SerializeField] TextMeshProUGUI _balanceText;
-    PlayerInventory _playerInventory;
-    float _priceOfSelectedItems;
-    float _balance;
-    List<Item> _selectedItems = new List<Item>();
+{   
 
-    public static Action OnTrade;
 
-    private void Awake()
-    {
-        _playerInventory = FindObjectOfType<PlayerInventory>();
-    }
+  /*
 
     private void OnEnable()
     {
@@ -60,33 +43,20 @@ public class Shop : MonoBehaviour
 
             if (isAddingMargin)
             {
-                item._price += item._price * _priceModifier;
+                //item._price += item._price * _priceModifier;
+                item._modifiedPrice = item._basicPrice + item._basicPrice * _priceModifier;
             }
             else
             {
-                item._price -= item._price * _priceModifier;
+                //item._price -= item._price * _priceModifier;
+                item._modifiedPrice = item._basicPrice - item._basicPrice * _priceModifier;
             }
+            //item._price = Mathf.Round(item._price);
+            item._modifiedPrice = Mathf.Round(item._modifiedPrice);
         }
     }
 
-    void SetupShopInventory()
-    {
-        for (int i = 0; i < _slots.Count; i++)
-        {
-            if (i >= _items.Count)
-            {
-                _slots[i].gameObject.SetActive(false);
-            }
-            else
-            {
-                _slots[i].gameObject.SetActive(true);
-                _slots[i].AssignedItem = _items[i];
-                _slots[i].SetSlotItem();
-                _slots[i].gameObject.SetActive(true);
-            }
-        }
-        DisplayCurrentMoneyAmount();
-    }
+
 
     void CalculatePriceOfSelectedItems()
     {
@@ -95,7 +65,8 @@ public class Shop : MonoBehaviour
         {
             if (slot.IsSelected)
             {
-                _priceOfSelectedItems += slot.AssignedItem._price;
+                //_priceOfSelectedItems += slot.AssignedItem._price;
+                _priceOfSelectedItems += slot.AssignedItem._modifiedPrice;
                 _selectedItems.Add(slot.AssignedItem);
             }
             else
@@ -106,11 +77,7 @@ public class Shop : MonoBehaviour
         DisplayTotalBalanceOfSelectedItems();
     }
 
-        void DisplayCurrentMoneyAmount()
-    {
-        _playerMoneyAmountText.text = _playerInventory.MoneyAmount.ToString();
-        _shopMoneyAmountText.text = _moneyAmount.ToString();
-    }
+
 
     void DisplayTotalBalanceOfSelectedItems()
     {
@@ -127,14 +94,32 @@ public class Shop : MonoBehaviour
             _moneyAmount += _balance * -1;
             DisplayCurrentMoneyAmount();
 
-            TransferSelectedItemsToPlayerInventory();
-            //TODO
-            //TransferSelectedItemsToShopInventory();
-
-            OnTrade?.Invoke();
+            TransferSelectedItemsToPlayerInventory();           
+            TransferSelectedItemsToShopInventory();
             _selectedItems.Clear();
+            _playerInventory.ResetSelectionAndPrice();
+
+            SetupShopInventory();
+            _playerInventory.SetupPlayerInventory();
+            //OnTrade?.Invoke();
+
+            
+            
             CalculatePriceOfSelectedItems();
             DisplayTotalBalanceOfSelectedItems();
+        }
+    }
+
+    private void TransferSelectedItemsToShopInventory()
+    {
+        foreach (Item item in _playerInventory._selectedItems)
+        {
+            _playerInventory._items.Remove(item);
+            _items.Add(item);
+            //_playerInventory.SetupPlayerInventory();
+
+
+            //SetupShopInventory();
         }
     }
 
@@ -144,33 +129,10 @@ public class Shop : MonoBehaviour
         {
             _items.Remove(item);
             _playerInventory._items.Add(item);
-            SetupShopInventory();
-            _playerInventory.SetupPlayerInventory();
+           // SetupShopInventory();
+           // _playerInventory.SetupPlayerInventory();
         }
     }
-
-    void OnTriggerEnter2D(Collider2D collision)
-    {
-        _playerInventory = collision.GetComponent<PlayerInventory>();
-
-        if (_playerInventory != null)
-        {
-            _playerInventory.onPriceOfSelectedItemsCalculated += DisplayTotalBalanceOfSelectedItems;
-            _shopInventoryWindow.gameObject.SetActive(true);
-            _playerInventoryWindow.gameObject.SetActive(true);
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D collision)
-    {
-        _playerInventory = collision.GetComponent<PlayerInventory>();
-
-        if (_playerInventory != null)
-        {
-            _playerInventory.onPriceOfSelectedItemsCalculated -= DisplayTotalBalanceOfSelectedItems;
-            _shopInventoryWindow.gameObject.SetActive(false);
-            _playerInventoryWindow.gameObject.SetActive(false);
-        }
-    }
+  */
 }
 

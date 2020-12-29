@@ -8,7 +8,8 @@ public class Item
 {
     public string _name;
     public float _weight;
-    public float _price;
+    public float _basicPrice;
+    public float _modifiedPrice;
     public Sprite _image;
 
     

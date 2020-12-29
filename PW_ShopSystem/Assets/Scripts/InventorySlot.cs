@@ -12,35 +12,30 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] TextMeshProUGUI _tooltipName;
     [SerializeField] TextMeshProUGUI _tooltipWeight;
     [SerializeField] TextMeshProUGUI _toolTipPrice;
-    Item _assignedItem;
-    bool _isSelected;
-    public bool IsSelected { get { return _isSelected; } }
+    
     Image _backgroundImage;
 
-    public Item AssignedItem { get { return _assignedItem; } set { _assignedItem = value; } }
+    Item _assignedItem;
+    bool _isSelected;
+    bool _isAssignedToShop;
 
-    public event Action OnItemClicked;
+    public Item AssignedItem { get { return _assignedItem; } set { _assignedItem = value; } }
+    public bool IsSelected { get { return _isSelected; } }
+    public bool IsAssignedToShop { get { return _isAssignedToShop; } }
+
+    public event Action<string> OnSlotClicked;
 
     private void Awake()
     {
         _backgroundImage = GetComponent<Image>();
     }
 
-    private void OnEnable()
-    {
-        Shop.OnTrade += UnselectSlot;
-    }
-
-    private void OnDisable()
-    {
-        Shop.OnTrade -= UnselectSlot;
-    }
     public void SetSlotItem()
     {
         _slotImage.sprite = _assignedItem._image;
         _tooltipName.text = _assignedItem._name;
         _tooltipWeight.text = "Weight: " + _assignedItem._weight;
-        _toolTipPrice.text = "Price: " + _assignedItem._price;
+        _toolTipPrice.text = "Price: " + _assignedItem._modifiedPrice;
     }
 
     public void DisplayToolTip(bool shouldDisplay)
@@ -48,7 +43,7 @@ public class InventorySlot : MonoBehaviour
         _toolTipWindow.gameObject.SetActive(shouldDisplay);
     }
 
-    public void SelectItem()
+    public void ClickOnSlot()
     {
         _isSelected = !_isSelected;
 
@@ -60,14 +55,19 @@ public class InventorySlot : MonoBehaviour
         {
             _backgroundImage.color = Color.white;
         }
-
-        OnItemClicked?.Invoke();
+        var name = this.name;
+        OnSlotClicked?.Invoke(name);
     }
 
     public void UnselectSlot()
     {
         _isSelected = false;
         _backgroundImage.color = Color.white;
+    }
+
+    public void AssignToShop(bool shouldAssign)
+    {
+        _isAssignedToShop = shouldAssign;
     }
     
 }
