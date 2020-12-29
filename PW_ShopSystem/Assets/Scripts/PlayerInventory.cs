@@ -9,7 +9,6 @@ public class PlayerInventory : MonoBehaviour
 {
     [SerializeField] public List<Item> _items;
     [SerializeField] float _moneyAmount;
-    
     [SerializeField] List<InventorySlot> _slots;
     float _priceOfSelectedItems;
     public float MoneyAmount { get { return _moneyAmount; } set { _moneyAmount = value; } }

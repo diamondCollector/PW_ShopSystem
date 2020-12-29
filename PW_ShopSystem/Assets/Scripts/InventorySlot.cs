@@ -21,7 +21,6 @@ public class InventorySlot : MonoBehaviour
 
     public event Action OnItemClicked;
 
-
     private void Awake()
     {
         _backgroundImage = GetComponent<Image>();

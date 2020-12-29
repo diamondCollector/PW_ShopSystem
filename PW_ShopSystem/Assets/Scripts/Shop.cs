@@ -85,7 +85,6 @@ public class Shop : MonoBehaviour
                 _slots[i].gameObject.SetActive(true);
             }
         }
-
         DisplayCurrentMoneyAmount();
     }
 
@@ -111,7 +110,6 @@ public class Shop : MonoBehaviour
     {
         _playerMoneyAmountText.text = _playerInventory.MoneyAmount.ToString();
         _shopMoneyAmountText.text = _moneyAmount.ToString();
- 
     }
 
     void DisplayTotalBalanceOfSelectedItems()
@@ -136,7 +134,6 @@ public class Shop : MonoBehaviour
             _selectedItems.Clear();
             CalculatePriceOfSelectedItems();
             DisplayTotalBalanceOfSelectedItems();
-            
         }
     }
 
