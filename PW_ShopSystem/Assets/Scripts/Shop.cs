@@ -128,6 +128,7 @@ public class Shop : MonoBehaviour
             DisplayCurrentMoneyAmount();
 
             TransferSelectedItemsToPlayerInventory();
+            //TODO
             //TransferSelectedItemsToShopInventory();
 
             OnTrade?.Invoke();

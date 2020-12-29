@@ -18,8 +18,8 @@ public class PlayerInventory : MonoBehaviour
 
     private void OnEnable()
     {
-        Shop.OnTrade += ClearSelectedItems;
-        Shop.OnTrade += CalculatePriceOfSelectedItems;
+        //When Trade is confirmed
+        Shop.OnTrade += ResetSelectionAndPrice;
         foreach (InventorySlot slot in _slots)
         {
             slot.OnItemClicked += CalculatePriceOfSelectedItems;
@@ -34,8 +34,7 @@ public class PlayerInventory : MonoBehaviour
 
     private void OnDisable()
     {
-        Shop.OnTrade -= ClearSelectedItems;
-        Shop.OnTrade -= CalculatePriceOfSelectedItems;
+        Shop.OnTrade -= ResetSelectionAndPrice;
         foreach (InventorySlot slot in _slots)
         {
             slot.OnItemClicked -= CalculatePriceOfSelectedItems;
@@ -81,5 +80,11 @@ public class PlayerInventory : MonoBehaviour
     void ClearSelectedItems()
     {
         _selectedItems.Clear();
+    }
+
+    void ResetSelectionAndPrice()
+    {
+        ClearSelectedItems();
+        CalculatePriceOfSelectedItems();
     }
 }
