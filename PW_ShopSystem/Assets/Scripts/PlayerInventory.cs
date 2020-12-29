@@ -3,13 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class PlayerInventory : MonoBehaviour
 {
     [SerializeField] List<Item> _items;
-    [SerializeField] int _moneyAmount;
-    [SerializeField] TextMeshProUGUI _moneyAmountText;
+    [SerializeField] float _moneyAmount;
+    
     [SerializeField] List<InventorySlot> _slots;
+    float _priceOfSelectedItems;
+    public float MoneyAmount { get { return _moneyAmount; } set { _moneyAmount = value; } }
+    public float PriceOfSelectedItems { get { return _priceOfSelectedItems; } }
+
+    public Action onPriceOfSelectedItemsCalculated;
+
+    private void OnEnable()
+    {
+        foreach (InventorySlot slot in _slots)
+        {
+            slot.OnItemSelected += CalculatePriceOfSelectedItems;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -17,9 +31,16 @@ public class PlayerInventory : MonoBehaviour
         SetupPlayerInventory();
     }
 
+    private void OnDisable()
+    {
+        foreach (InventorySlot slot in _slots)
+        {
+            slot.OnItemSelected -= CalculatePriceOfSelectedItems;
+        }
+    }
+
     void SetupPlayerInventory()
     {
-        DisplayCurrentMoneyAmount();
         for (int i = 0; i < _slots.Count; i++)
         {
             if (i >= _items.Count)
@@ -34,8 +55,17 @@ public class PlayerInventory : MonoBehaviour
         }
     }
 
-    private void DisplayCurrentMoneyAmount()
+    void CalculatePriceOfSelectedItems()
     {
-        _moneyAmountText.text = _moneyAmount.ToString();
+        _priceOfSelectedItems = 0;
+        foreach (InventorySlot slot in _slots)
+        {
+            if (slot.IsSelected)
+            {
+                _priceOfSelectedItems += slot.AssignedItem._price;
+            }
+        }
+        onPriceOfSelectedItemsCalculated?.Invoke();
+        Debug.Log("Price of selected Items on player side: " + _priceOfSelectedItems);
     }
 }

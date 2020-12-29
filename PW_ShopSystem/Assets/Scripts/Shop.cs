@@ -8,17 +8,44 @@ public class Shop : MonoBehaviour
 {
     [SerializeField] List<Item> _items;
     [SerializeField] float _priceModifier;
-    [SerializeField] int _moneyAmount;
-    [SerializeField] TextMeshProUGUI _moneyAmountText;
+    [SerializeField] float _moneyAmount;
+    [SerializeField] TextMeshProUGUI _shopMoneyAmountText;
+    [SerializeField] TextMeshProUGUI _playerMoneyAmountText;
     [SerializeField] List<InventorySlot> _slots;
     [SerializeField] Image _shopInventoryWindow;
     [SerializeField] Image _playerInventoryWindow;
+    [SerializeField] TextMeshProUGUI _balanceText;
+    PlayerInventory _playerInventory;
+    float _priceOfSelectedItems;
+    float _balance;
+    List<Item> _selectedItems;
+
+    private void Awake()
+    {
+        _playerInventory = FindObjectOfType<PlayerInventory>();
+    }
+
+    private void OnEnable()
+    {
+        foreach (InventorySlot slot in _slots)
+        {
+            slot.OnItemSelected += CalculatePriceOfSelectedItems;
+        }
+    }
 
     // Start is called before the first frame update
     void Start()
     {       
         ModifyItemPrices();
         SetupShopInventory();
+    }
+
+    private void OnDisable()
+    {
+        foreach (InventorySlot slot in _slots)
+        {
+            slot.OnItemSelected -= CalculatePriceOfSelectedItems;
+        }
     }
 
     void ModifyItemPrices()
@@ -43,37 +70,85 @@ public class Shop : MonoBehaviour
     {
         for (int i = 0; i < _slots.Count; i++)
         {
-            _slots[i].AssignedItem = _items[i];
-            _slots[i].SetSlotItem();
+            if (i >= _items.Count)
+            {
+                return;
+            }
+            else
+            {
+                _slots[i].AssignedItem = _items[i];
+                _slots[i].SetSlotItem();
+            }
+            
         }
 
         DisplayCurrentMoneyAmount();
     }
 
-    private void DisplayCurrentMoneyAmount()
+    void CalculatePriceOfSelectedItems()
     {
-        _moneyAmountText.text = _moneyAmount.ToString();
+        _priceOfSelectedItems = 0;
+        foreach (InventorySlot slot in _slots)
+        {
+            if (slot.IsSelected)
+            {
+                _priceOfSelectedItems += slot.AssignedItem._price;
+                _selectedItems.Add(slot.AssignedItem);
+            }
+            else
+            {
+                _selectedItems.Remove(slot.AssignedItem);
+            }
+        }
+        DisplayTotalBalanceOfSelectedItems();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision)
+        void DisplayCurrentMoneyAmount()
     {
-        var player = collision.GetComponent<Player>();
+        _playerMoneyAmountText.text = _playerInventory.MoneyAmount.ToString();
+        _shopMoneyAmountText.text = _moneyAmount.ToString();
+ 
+    }
 
-        if (player != null)
+    void DisplayTotalBalanceOfSelectedItems()
+    {
+            _balance = 0;
+            _balance = _playerInventory.PriceOfSelectedItems - _priceOfSelectedItems;
+            _balanceText.text = "Balance: " + _balance;
+    }
+
+    public void Trade()
+    {
+        if (_playerInventory.MoneyAmount > _balance * -1 && _moneyAmount > _balance)
         {
+            _playerInventory.MoneyAmount += _balance;
+            _moneyAmount += _balance * -1;
+            DisplayCurrentMoneyAmount();
+        }
+    }
+
+    void OnTriggerEnter2D(Collider2D collision)
+    {
+        _playerInventory = collision.GetComponent<PlayerInventory>();
+
+        if (_playerInventory != null)
+        {
+            _playerInventory.onPriceOfSelectedItemsCalculated += DisplayTotalBalanceOfSelectedItems;
             _shopInventoryWindow.gameObject.SetActive(true);
             _playerInventoryWindow.gameObject.SetActive(true);
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision)
+    void OnTriggerExit2D(Collider2D collision)
     {
-        var player = collision.GetComponent<Player>();
+        _playerInventory = collision.GetComponent<PlayerInventory>();
 
-        if (player != null)
+        if (_playerInventory != null)
         {
+            _playerInventory.onPriceOfSelectedItemsCalculated -= DisplayTotalBalanceOfSelectedItems;
             _shopInventoryWindow.gameObject.SetActive(false);
             _playerInventoryWindow.gameObject.SetActive(false);
         }
     }
 }
+

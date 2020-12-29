@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System;
 
 public class InventorySlot : MonoBehaviour
 {
@@ -12,8 +13,19 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] TextMeshProUGUI _tooltipWeight;
     [SerializeField] TextMeshProUGUI _toolTipPrice;
     Item _assignedItem;
+    bool _isSelected;
+    public bool IsSelected { get { return _isSelected; } }
+    Image _backgroundImage;
 
     public Item AssignedItem { get { return _assignedItem; } set { _assignedItem = value; } }
+
+    public event Action OnItemSelected;
+
+
+    private void Awake()
+    {
+        _backgroundImage = GetComponent<Image>();
+    }
 
     public void SetSlotItem()
     {
@@ -27,4 +39,21 @@ public class InventorySlot : MonoBehaviour
     {
         _toolTipWindow.gameObject.SetActive(shouldDisplay);
     }
+
+    public void SelectItem()
+    {
+        _isSelected = !_isSelected;
+
+        if (_isSelected)
+        {
+            _backgroundImage.color = Color.blue;
+        }
+        else
+        {
+            _backgroundImage.color = Color.white;
+        }
+
+        OnItemSelected?.Invoke();
+    }
+    
 }
