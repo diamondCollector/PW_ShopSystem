@@ -11,6 +11,5 @@ public class Item
     public float _basicPrice;
     public float _modifiedPrice;
     public Sprite _image;
-
     
 }

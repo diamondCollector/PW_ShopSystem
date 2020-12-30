@@ -441,12 +441,69 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 142791563131712445, guid: e3226522d8fef3f40874fe41f5d83f50, type: 3}
   m_PrefabInstance: {fileID: 142791564203208702}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1080807067 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3355963393578285935, guid: 0b12062da8750364f8a9f4101b3393ca, type: 3}
+  m_PrefabInstance: {fileID: 3355963394646177268}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1080807068
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1080807067}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 19f8368b5f03765409c11286cba1b13f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _items:
+  - _name: Yellow Key
+    _weight: 1
+    _basicPrice: 10
+    _modifiedPrice: 0
+    _image: {fileID: 21300000, guid: 7e0a28be7faa03540babf263c9fc1657, type: 3}
+  - _name: Blue Key
+    _weight: 1
+    _basicPrice: 20
+    _modifiedPrice: 0
+    _image: {fileID: 21300000, guid: 8942feca047c1a74bb27b825e6006740, type: 3}
+  - _name: Red Key
+    _weight: 1
+    _basicPrice: 50
+    _modifiedPrice: 0
+    _image: {fileID: 21300000, guid: 37fec75f033d2d341a81125e26eba01e, type: 3}
+  - _name: Green Key
+    _weight: 1
+    _basicPrice: 80
+    _modifiedPrice: 0
+    _image: {fileID: 21300000, guid: 03556e359240a21499f3d534a2bec6c6, type: 3}
+  _moneyAmount: 70
+  _priceModifier: 0.25
+  _legendaryShopItems:
+  - _name: Legend Blue
+    _weight: 5
+    _basicPrice: 50
+    _modifiedPrice: 0
+    _image: {fileID: 21300000, guid: 6c62c0a4a85f755488bb9fcb64f8a221, type: 3}
+  - _name: Legend Green
+    _weight: 5
+    _basicPrice: 70
+    _modifiedPrice: 0
+    _image: {fileID: 21300000, guid: 054dc635db00f00448e1399d05e8b409, type: 3}
+  - _name: Legend Red
+    _weight: 5
+    _basicPrice: 100
+    _modifiedPrice: 0
+    _image: {fileID: 21300000, guid: 18a3d86a8f4d018419f8774364f6185a, type: 3}
+  _chanceForLegendaryItem: 10
 --- !u!114 &1080807071 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3355963393578285931, guid: 0b12062da8750364f8a9f4101b3393ca, type: 3}
   m_PrefabInstance: {fileID: 3355963394646177268}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 1080807067}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0da7b744f487fc94b8515e0c366ed5a6, type: 3}

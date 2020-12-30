@@ -15,11 +15,11 @@ public class ShopKeeper : MonoBehaviour
 
     [SerializeField] List<InventorySlot> _shopSlots;
     [SerializeField] List<InventorySlot> _playerSlots;
-    [SerializeField] List<Item> _shopItems;
-    [SerializeField] List<Item> _legendaryShopItems;
-    [SerializeField] int _chanceForLegendaryItem = 10;
-    [SerializeField] float _priceModifier;
-    [SerializeField] float _moneyAmount;
+    //[SerializeField] List<Item> _shopItems;
+    //[SerializeField] List<Item> _legendaryShopItems;
+    //[SerializeField] int _chanceForLegendaryItem = 10;
+    //[SerializeField] float _priceModifier;
+    //[SerializeField] float _moneyAmount;
 
     List<InventorySlot> _selectedShopSlots;
     List<InventorySlot> _selectedPlayerSlots;
@@ -29,7 +29,6 @@ public class ShopKeeper : MonoBehaviour
 
     Item _availableLegendaryItem;
 
-
     float _shopSelectedItemsPrice;
     float _playerSelectedItemsPrice;
     float _balance;
@@ -37,11 +36,17 @@ public class ShopKeeper : MonoBehaviour
     string _tradeFailed = "I can't afford that!";
 
     PlayerEquipment _playerEquipment;
+    ShopEquipment _shopEquipment;
     List<Item> _shopSelectedItems = new List<Item>();
     List<Item> _playerSelectedItems = new List<Item>();
 
     public static event Action OnTradeComplete;
     public static event Action OnShopClosed;
+
+    private void Awake()
+    {
+        _shopEquipment = GetComponent<ShopEquipment>();
+    }
 
     private void OnEnable()
     {
@@ -53,8 +58,7 @@ public class ShopKeeper : MonoBehaviour
         foreach (InventorySlot slot in _playerSlots)
         {
             slot.OnSlotClicked += HandleSlotSelection;
-        }    
-        
+        }     
     }
 
     private void Start()
@@ -91,7 +95,7 @@ public class ShopKeeper : MonoBehaviour
     void DisplayCurrentMoneyAmount()
     {
         _playerMoneyAmountText.text = _playerEquipment.MoneyAmount.ToString();
-        _shopMoneyAmountText.text = _moneyAmount.ToString();
+        _shopMoneyAmountText.text = _shopEquipment.MoneyAmount.ToString();
     }
 
     void ModifyItemsPrices(List<Item> items, float modifier)
@@ -177,11 +181,11 @@ public class ShopKeeper : MonoBehaviour
 
     public void Trade()
     {
-        if(_playerEquipment.MoneyAmount >= _balance * -1 && _moneyAmount >= _balance)
+        if(_playerEquipment.MoneyAmount >= _balance * -1 && _shopEquipment.MoneyAmount >= _balance)
         {
-            TransferItems(_shopSelectedItems, _shopItems, _playerEquipment.Items);
-            TransferItems(_playerSelectedItems, _playerEquipment.Items, _shopItems);
-            SetupInventory(_shopSlots, _shopItems);
+            TransferItems(_shopSelectedItems, _shopEquipment.Items, _playerEquipment.Items);
+            TransferItems(_playerSelectedItems, _playerEquipment.Items, _shopEquipment.Items);
+            SetupInventory(_shopSlots, _shopEquipment.Items);
             SetupInventory(_playerSlots, _playerEquipment.Items);
             BalancePayment();
             DisplayCurrentBalance();
@@ -206,7 +210,7 @@ public class ShopKeeper : MonoBehaviour
     void BalancePayment()
     {
         _playerEquipment.MoneyAmount += _balance;
-        _moneyAmount -= _balance;
+        _shopEquipment.MoneyAmount -= _balance;
         _balance = 0;
         _playerSelectedItemsPrice = 0;
         _shopSelectedItemsPrice = 0;
@@ -220,7 +224,7 @@ public class ShopKeeper : MonoBehaviour
             giverAllItems.Remove(item);
             if (item == _availableLegendaryItem)
             {
-                _legendaryShopItems.Remove(item);
+               _shopEquipment._legendaryShopItems.Remove(item);
             }
         }
 
@@ -234,11 +238,11 @@ public class ShopKeeper : MonoBehaviour
     private void AddLegendaryItem()
     {
         var randomNumber = UnityEngine.Random.Range(0, 100);
-        if (randomNumber <= _chanceForLegendaryItem && _legendaryShopItems.Count > 0)
+        if (randomNumber <=_shopEquipment.ChanceForLegendaryItem && _shopEquipment._legendaryShopItems.Count > 0)
         {
-            var index = UnityEngine.Random.Range(0, _legendaryShopItems.Count - 1);
-            _availableLegendaryItem = _legendaryShopItems[index];
-            _shopItems.Add(_availableLegendaryItem);
+            var index = UnityEngine.Random.Range(0, _shopEquipment._legendaryShopItems.Count - 1);
+            _availableLegendaryItem = _shopEquipment._legendaryShopItems[index];
+            _shopEquipment.Items.Add(_availableLegendaryItem);
         }
     }
 
@@ -249,9 +253,9 @@ public class ShopKeeper : MonoBehaviour
         if (_playerEquipment != null)
         {
             AddLegendaryItem();
-            ModifyItemsPrices(_shopItems, _priceModifier);
+            ModifyItemsPrices(_shopEquipment.Items, _shopEquipment.PriceModifier);
             ModifyItemsPrices(_playerEquipment.Items, _playerEquipment.PriceModifier);
-            SetupInventory(_shopSlots, _shopItems);
+            SetupInventory(_shopSlots, _shopEquipment.Items);
             SetupInventory(_playerSlots, _playerEquipment.Items);
             DisplayCurrentMoneyAmount();
             DisplayCurrentBalance();
@@ -268,9 +272,8 @@ public class ShopKeeper : MonoBehaviour
             OnShopClosed?.Invoke();
             _shopUI.SetActive(false);
             _playerEquipment = null;
-            _shopItems.Remove(_availableLegendaryItem);
+            _shopEquipment.Items.Remove(_availableLegendaryItem);
             _availableLegendaryItem = null;
-            
         }
     }
 }
