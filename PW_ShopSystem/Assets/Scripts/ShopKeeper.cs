@@ -15,11 +15,6 @@ public class ShopKeeper : MonoBehaviour
 
     [SerializeField] List<InventorySlot> _shopSlots;
     [SerializeField] List<InventorySlot> _playerSlots;
-    //[SerializeField] List<Item> _shopItems;
-    //[SerializeField] List<Item> _legendaryShopItems;
-    //[SerializeField] int _chanceForLegendaryItem = 10;
-    //[SerializeField] float _priceModifier;
-    //[SerializeField] float _moneyAmount;
 
     List<InventorySlot> _selectedShopSlots;
     List<InventorySlot> _selectedPlayerSlots;
