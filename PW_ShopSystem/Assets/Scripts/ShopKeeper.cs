@@ -42,8 +42,7 @@ public class ShopKeeper : MonoBehaviour
         foreach (InventorySlot slot in _playerSlots)
         {
             slot.OnSlotClicked += HandleSlotSelection;
-        }
-       
+        }      
     }
 
     private void Start()
@@ -64,25 +63,18 @@ public class ShopKeeper : MonoBehaviour
         if (slot.IsAssignedToShop)
         {
             ManageSelectedItem(slot, _shopSelectedItems);
-            CalculateSelectedItemsPrice(_shopSelectedItems, _shopSelectedItemsPrice);
+            _shopSelectedItemsPrice = CalculateSelectedItemsPrice(_shopSelectedItems);
             Debug.Log("Shop items price: " + _shopSelectedItemsPrice);
-
         }
         else
         {
             ManageSelectedItem(slot, _playerSelectedItems);
-            CalculateSelectedItemsPrice(_playerSelectedItems, _playerSelectedItemsPrice);
+            _playerSelectedItemsPrice = CalculateSelectedItemsPrice(_playerSelectedItems);
             Debug.Log("Player items price: " + _playerSelectedItemsPrice);
         }
-    }
 
-    private void CalculateSelectedItemsPrice(List<Item> selectedItems, float price)
-    {
-        price = 0; 
-        foreach (Item item in selectedItems)
-        {
-            price += item._modifiedPrice;
-        } 
+        _balance = CalculateTradeBalance();
+        DisplayCurrentBalance();
     }
 
     private void ManageSelectedItem(InventorySlot slot, List<Item> selectedItems)
@@ -105,6 +97,27 @@ public class ShopKeeper : MonoBehaviour
         }
     }
 
+    private float CalculateSelectedItemsPrice(List<Item> selectedItems)
+    {
+        float price = 0;
+        foreach (Item item in selectedItems)
+        {
+            price += item._modifiedPrice;
+        }
+
+        return price;
+    }
+
+    private float CalculateTradeBalance()
+    {
+        float balance = _playerSelectedItemsPrice - _shopSelectedItemsPrice;
+        return balance;
+    }
+
+    void DisplayCurrentBalance()
+    {
+        _balanceText.text =$"Balance: {_balance.ToString()}";
+    }
 
     void SetupInventory(List<InventorySlot> slots, List<Item> items)
     {
@@ -164,8 +177,6 @@ public class ShopKeeper : MonoBehaviour
             _shopUI.SetActive(true);
         }
     }
-
-    
 
     void OnTriggerExit2D(Collider2D collision)
     {
