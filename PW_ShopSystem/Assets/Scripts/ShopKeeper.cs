@@ -64,15 +64,26 @@ public class ShopKeeper : MonoBehaviour
         if (slot.IsAssignedToShop)
         {
             ManageSelectedItem(slot, _shopSelectedItems);
-            
+            CalculateSelectedItemsPrice(_shopSelectedItems, _shopSelectedItemsPrice);
+            Debug.Log("Shop items price: " + _shopSelectedItemsPrice);
+
         }
         else
         {
             ManageSelectedItem(slot, _playerSelectedItems);
+            CalculateSelectedItemsPrice(_playerSelectedItems, _playerSelectedItemsPrice);
+            Debug.Log("Player items price: " + _playerSelectedItemsPrice);
         }
     }
 
-    
+    private void CalculateSelectedItemsPrice(List<Item> selectedItems, float price)
+    {
+        price = 0; 
+        foreach (Item item in selectedItems)
+        {
+            price += item._modifiedPrice;
+        } 
+    }
 
     private void ManageSelectedItem(InventorySlot slot, List<Item> selectedItems)
     {
@@ -94,10 +105,6 @@ public class ShopKeeper : MonoBehaviour
         }
     }
 
-    void CalculatePrice(bool k)
-    {
-        
-    }
 
     void SetupInventory(List<InventorySlot> slots, List<Item> items)
     {

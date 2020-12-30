@@ -7,6 +7,7 @@ using System;
 
 public class PlayerInventory : MonoBehaviour
 {
+    /*
     [SerializeField] public List<Item> _items;
     [SerializeField] float _moneyAmount;
     [SerializeField] List<InventorySlot> _slots;
@@ -134,4 +135,5 @@ public class PlayerInventory : MonoBehaviour
             item._modifiedPrice = Mathf.Round(item._modifiedPrice);
         }
     }
+    */
 }
