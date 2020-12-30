@@ -265,10 +265,12 @@ public class ShopKeeper : MonoBehaviour
 
         if (_playerEquipment != null)
         {
+            OnShopClosed?.Invoke();
             _shopUI.SetActive(false);
             _playerEquipment = null;
             _shopItems.Remove(_availableLegendaryItem);
             _availableLegendaryItem = null;
+            
         }
     }
 }

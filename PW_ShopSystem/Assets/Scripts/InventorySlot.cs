@@ -75,6 +75,7 @@ public class InventorySlot : MonoBehaviour
     {
         _isSelected = false;
         _backgroundImage.color = Color.white;
+        OnSlotClicked?.Invoke(this);
     }
 
     public void AssignToShop(bool shouldAssign)
