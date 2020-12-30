@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +11,7 @@ public class ShopKeeper : MonoBehaviour
     [SerializeField] TextMeshProUGUI _shopMoneyAmountText;
     [SerializeField] TextMeshProUGUI _playerMoneyAmountText;
     [SerializeField] TextMeshProUGUI _balanceText;
+    [SerializeField] TextMeshProUGUI _tradeText;
 
     [SerializeField] List<InventorySlot> _shopSlots;
     [SerializeField] List<InventorySlot> _playerSlots;
@@ -26,14 +28,17 @@ public class ShopKeeper : MonoBehaviour
     float _shopSelectedItemsPrice;
     float _playerSelectedItemsPrice;
     float _balance;
+    string _tradeSucceed = "Success!";
+    string _tradeFailed = "I can't afford that!";
 
     PlayerEquipment _playerEquipment;
     List<Item> _shopSelectedItems = new List<Item>();
     List<Item> _playerSelectedItems = new List<Item>();
 
+    public static event Action OnTradeComplete;
+
     private void OnEnable()
     {
-        
         foreach (InventorySlot slot in _shopSlots)
         {
             slot.OnSlotClicked += HandleSlotSelection; 
@@ -42,7 +47,8 @@ public class ShopKeeper : MonoBehaviour
         foreach (InventorySlot slot in _playerSlots)
         {
             slot.OnSlotClicked += HandleSlotSelection;
-        }      
+        }    
+        
     }
 
     private void Start()
@@ -55,6 +61,50 @@ public class ShopKeeper : MonoBehaviour
         foreach (InventorySlot slot in _shopSlots)
         {
             slot.AssignToShop(true);
+        }
+    }
+
+    void SetupInventory(List<InventorySlot> slots, List<Item> items)
+    {
+        for (int i = 0; i < slots.Count; i++)
+        {
+            if (i >= items.Count)
+            {
+                slots[i].gameObject.SetActive(false);
+            }
+            else
+            {
+                slots[i].gameObject.SetActive(true);
+                slots[i].AssignedItem = items[i];
+                slots[i].SetSlotItem();
+                slots[i].gameObject.SetActive(true);
+            }
+        }
+    }
+
+    void DisplayCurrentMoneyAmount()
+    {
+        _playerMoneyAmountText.text = _playerEquipment.MoneyAmount.ToString();
+        _shopMoneyAmountText.text = _moneyAmount.ToString();
+    }
+
+    void ModifyItemsPrices(List<Item> items, float modifier)
+    {
+        foreach (Item item in items)
+        {
+            var randomNumber = UnityEngine.Random.Range(0, 1);
+            bool isAddingMargin = randomNumber > 0.5f;
+
+            if (isAddingMargin)
+            {
+                item._modifiedPrice = item._basicPrice + item._basicPrice * modifier;
+            }
+            else
+            {
+                item._modifiedPrice = item._basicPrice - item._basicPrice * modifier;
+            }
+
+            item._modifiedPrice = Mathf.Round(item._modifiedPrice);
         }
     }
 
@@ -119,47 +169,55 @@ public class ShopKeeper : MonoBehaviour
         _balanceText.text =$"Balance: {_balance.ToString()}";
     }
 
-    void SetupInventory(List<InventorySlot> slots, List<Item> items)
+    public void Trade()
     {
-        for (int i = 0; i < slots.Count; i++)
+        if(_playerEquipment.MoneyAmount > _balance * -1 && _moneyAmount > _balance)
         {
-            if (i >= items.Count)
-            {
-                slots[i].gameObject.SetActive(false);
-            }
-            else
-            {
-                slots[i].gameObject.SetActive(true);
-                slots[i].AssignedItem = items[i];
-                slots[i].SetSlotItem();
-                slots[i].gameObject.SetActive(true);
-            }
+            TransferItems(_shopSelectedItems, _shopItems, _playerEquipment.Items);
+            TransferItems(_playerSelectedItems, _playerEquipment.Items, _shopItems);
+            SetupInventory(_shopSlots, _shopItems);
+            SetupInventory(_playerSlots, _playerEquipment.Items);
+            BalancePayment();
+            DisplayCurrentBalance();
+            DisplayCurrentMoneyAmount();
+            StartCoroutine(DisplayTradeMsg(_tradeSucceed));
+            OnTradeComplete?.Invoke();
+        } 
+        else
+        {
+            StartCoroutine(DisplayTradeMsg(_tradeFailed));
         }
     }
 
-    void DisplayCurrentMoneyAmount()
+    IEnumerator DisplayTradeMsg(string msg)
     {
-        _playerMoneyAmountText.text = _playerEquipment.MoneyAmount.ToString();
-        _shopMoneyAmountText.text = _moneyAmount.ToString();
+        _tradeText.text = msg;
+        _tradeText.gameObject.SetActive(true);
+        yield return new WaitForSeconds(2);
+        _tradeText.gameObject.SetActive(false);
     }
 
-    void ModifyItemsPrices(List<Item> items, float modifier)
+    void BalancePayment()
     {
-        foreach (Item item in items)
+        _playerEquipment.MoneyAmount += _balance;
+        _moneyAmount -= _balance;
+        _balance = 0;
+        _playerSelectedItemsPrice = 0;
+        _shopSelectedItemsPrice = 0;
+    }
+
+    void TransferItems(List<Item> giverSelectedItems, List<Item> giverAllItems, List<Item> takerItems)
+    {
+        foreach (Item item in giverSelectedItems)
         {
-            var randomNumber = UnityEngine.Random.Range(0, 1);
-            bool isAddingMargin = randomNumber > 0.5f;
+            takerItems.Add(item);
+            giverAllItems.Remove(item);
+        }
 
-            if (isAddingMargin)
-            {
-                item._modifiedPrice = item._basicPrice + item._basicPrice * modifier;
-            }
-            else
-            {
-                item._modifiedPrice = item._basicPrice - item._basicPrice * modifier;
-            }
-
-            item._modifiedPrice = Mathf.Round(item._modifiedPrice);
+        giverSelectedItems.Clear();
+        foreach(Item item in giverSelectedItems)
+        {
+            Debug.Log("To zostalo na liscie po wyczyszczeniu: " + item._name);
         }
     }
 
@@ -174,6 +232,7 @@ public class ShopKeeper : MonoBehaviour
             SetupInventory(_shopSlots, _shopItems);
             SetupInventory(_playerSlots, _playerEquipment.Items);
             DisplayCurrentMoneyAmount();
+            DisplayCurrentBalance();
             _shopUI.SetActive(true);
         }
     }

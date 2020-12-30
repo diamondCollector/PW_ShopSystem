@@ -30,6 +30,16 @@ public class InventorySlot : MonoBehaviour
         _backgroundImage = GetComponent<Image>();
     }
 
+    private void OnEnable()
+    {
+        ShopKeeper.OnTradeComplete += UnselectSlot;
+    }
+
+    private void OnDisable()
+    {
+        ShopKeeper.OnTradeComplete -= UnselectSlot;
+    }
+
     public void SetSlotItem()
     {
         _slotImage.sprite = _assignedItem._image;
