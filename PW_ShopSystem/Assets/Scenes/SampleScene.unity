@@ -1295,6 +1295,10 @@ PrefabInstance:
       propertyPath: _playerSlots.Array.data[7]
       value: 
       objectReference: {fileID: 720082138}
+    - target: {fileID: 3355963393578285931, guid: 0b12062da8750364f8a9f4101b3393ca, type: 3}
+      propertyPath: _moneyAmount
+      value: 80
+      objectReference: {fileID: 0}
     - target: {fileID: 3355963393578285935, guid: 0b12062da8750364f8a9f4101b3393ca, type: 3}
       propertyPath: m_Name
       value: ShopKeeper

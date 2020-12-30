@@ -16,6 +16,8 @@ public class ShopKeeper : MonoBehaviour
     [SerializeField] List<InventorySlot> _shopSlots;
     [SerializeField] List<InventorySlot> _playerSlots;
     [SerializeField] List<Item> _shopItems;
+    [SerializeField] List<Item> _legendaryShopItems;
+    [SerializeField] int _chanceForLegendaryItem = 10;
     [SerializeField] float _priceModifier;
     [SerializeField] float _moneyAmount;
 
@@ -24,6 +26,9 @@ public class ShopKeeper : MonoBehaviour
 
     List<Item> _selectedShopItems = new List<Item>();
     List<Item> _selectedPlayerItems = new List<Item>();
+
+    Item _availableLegendaryItem;
+
 
     float _shopSelectedItemsPrice;
     float _playerSelectedItemsPrice;
@@ -36,6 +41,7 @@ public class ShopKeeper : MonoBehaviour
     List<Item> _playerSelectedItems = new List<Item>();
 
     public static event Action OnTradeComplete;
+    public static event Action OnShopClosed;
 
     private void OnEnable()
     {
@@ -92,8 +98,8 @@ public class ShopKeeper : MonoBehaviour
     {
         foreach (Item item in items)
         {
-            var randomNumber = UnityEngine.Random.Range(0, 1);
-            bool isAddingMargin = randomNumber > 0.5f;
+            var randomNumber = UnityEngine.Random.Range(0, 100);
+            bool isAddingMargin = randomNumber > 50;
 
             if (isAddingMargin)
             {
@@ -171,7 +177,7 @@ public class ShopKeeper : MonoBehaviour
 
     public void Trade()
     {
-        if(_playerEquipment.MoneyAmount > _balance * -1 && _moneyAmount > _balance)
+        if(_playerEquipment.MoneyAmount >= _balance * -1 && _moneyAmount >= _balance)
         {
             TransferItems(_shopSelectedItems, _shopItems, _playerEquipment.Items);
             TransferItems(_playerSelectedItems, _playerEquipment.Items, _shopItems);
@@ -212,6 +218,10 @@ public class ShopKeeper : MonoBehaviour
         {
             takerItems.Add(item);
             giverAllItems.Remove(item);
+            if (item == _availableLegendaryItem)
+            {
+                _legendaryShopItems.Remove(item);
+            }
         }
 
         giverSelectedItems.Clear();
@@ -221,12 +231,24 @@ public class ShopKeeper : MonoBehaviour
         }
     }
 
+    private void AddLegendaryItem()
+    {
+        var randomNumber = UnityEngine.Random.Range(0, 100);
+        if (randomNumber <= _chanceForLegendaryItem && _legendaryShopItems.Count > 0)
+        {
+            var index = UnityEngine.Random.Range(0, _legendaryShopItems.Count - 1);
+            _availableLegendaryItem = _legendaryShopItems[index];
+            _shopItems.Add(_availableLegendaryItem);
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D collision)
     {
         _playerEquipment = collision.GetComponent<PlayerEquipment>();
 
         if (_playerEquipment != null)
         {
+            AddLegendaryItem();
             ModifyItemsPrices(_shopItems, _priceModifier);
             ModifyItemsPrices(_playerEquipment.Items, _playerEquipment.PriceModifier);
             SetupInventory(_shopSlots, _shopItems);
@@ -245,6 +267,8 @@ public class ShopKeeper : MonoBehaviour
         {
             _shopUI.SetActive(false);
             _playerEquipment = null;
+            _shopItems.Remove(_availableLegendaryItem);
+            _availableLegendaryItem = null;
         }
     }
 }

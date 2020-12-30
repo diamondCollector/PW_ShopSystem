@@ -33,11 +33,13 @@ public class InventorySlot : MonoBehaviour
     private void OnEnable()
     {
         ShopKeeper.OnTradeComplete += UnselectSlot;
+        ShopKeeper.OnShopClosed += UnselectSlot;
     }
 
     private void OnDisable()
     {
         ShopKeeper.OnTradeComplete -= UnselectSlot;
+        ShopKeeper.OnShopClosed -= UnselectSlot;
     }
 
     public void SetSlotItem()
