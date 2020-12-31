@@ -137,18 +137,10 @@ public class ShopKeeper : MonoBehaviour
         if (slot.IsSelected)
         {
             selectedItems.Add(slot.AssignedItem);
-            //_selectedShopSlots.Add(slot);
-            Debug.Log(slot.AssignedItem._name +
-                " has been added to selected Shop items. Current number of selected items: "
-                + selectedItems.Count);
         }
         else if (!slot.IsSelected && selectedItems.Contains(slot.AssignedItem))
         {
             selectedItems.Remove(slot.AssignedItem);
-            //_selectedShopSlots.Remove(slot);
-            Debug.Log(slot.AssignedItem._name +
-                " has been removed from selected Shop items. Current number of selected items: "
-                + selectedItems.Count);
         }
     }
 
@@ -219,24 +211,20 @@ public class ShopKeeper : MonoBehaviour
             giverAllItems.Remove(item);
             if (item == _availableLegendaryItem)
             {
-               _shopEquipment._legendaryShopItems.Remove(item);
+               _shopEquipment.LegendaryShopItems.Remove(item);
             }
         }
 
         giverSelectedItems.Clear();
-        foreach(Item item in giverSelectedItems)
-        {
-            Debug.Log("To zostalo na liscie po wyczyszczeniu: " + item._name);
-        }
     }
 
     private void AddLegendaryItem()
     {
         var randomNumber = UnityEngine.Random.Range(0, 100);
-        if (randomNumber <=_shopEquipment.ChanceForLegendaryItem && _shopEquipment._legendaryShopItems.Count > 0)
+        if (randomNumber <=_shopEquipment.ChanceForLegendaryItem && _shopEquipment.LegendaryShopItems.Count > 0)
         {
-            var index = UnityEngine.Random.Range(0, _shopEquipment._legendaryShopItems.Count - 1);
-            _availableLegendaryItem = _shopEquipment._legendaryShopItems[index];
+            var index = UnityEngine.Random.Range(0, _shopEquipment.LegendaryShopItems.Count - 1);
+            _availableLegendaryItem = _shopEquipment.LegendaryShopItems[index];
             _shopEquipment.Items.Add(_availableLegendaryItem);
         }
     }
@@ -264,11 +252,11 @@ public class ShopKeeper : MonoBehaviour
 
         if (_playerEquipment != null)
         {
-            OnShopClosed?.Invoke();
-            _shopUI.SetActive(false);
+            OnShopClosed?.Invoke();            
             _playerEquipment = null;
             _shopEquipment.Items.Remove(_availableLegendaryItem);
             _availableLegendaryItem = null;
+            _shopUI.SetActive(false);
         }
     }
 }
